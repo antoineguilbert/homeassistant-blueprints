@@ -105,6 +105,10 @@ conditions:
         entity_id: !input tempo_sensor
         state: "Rouge"
 
+variables:
+  notify_service: !input notify_service
+  battery_level_sensor: !input battery_level_sensor
+
 actions:
   - action: select.select_option
     target:
@@ -118,11 +122,11 @@ actions:
             entity_id: !input battery_level_sensor
             below: !input low_battery_threshold
         sequence:
-          - action: !input notify_service
+          - service: "{{ notify_service }}"
             data:
               title: "🔋 Charge rapide"
               message: >-
-                Batterie à {{ states(!input battery_level_sensor) }}%. Charge rapide.
+                Batterie à {{ states(battery_level_sensor) }}%. Charge rapide.
           - action: number.set_value
             target:
               entity_id: !input input_limit
@@ -135,11 +139,11 @@ actions:
             above: !input low_battery_threshold
             below: !input medium_battery_threshold
         sequence:
-          - action: !input notify_service
+          - service: "{{ notify_service }}"
             data:
               title: "🔋 Charge normale"
               message: >-
-                Batterie à {{ states(!input battery_level_sensor) }}%. Charge normale.
+                Batterie à {{ states(battery_level_sensor) }}%. Charge normale.
           - action: number.set_value
             target:
               entity_id: !input input_limit
@@ -151,11 +155,11 @@ actions:
             entity_id: !input battery_level_sensor
             above: !input medium_battery_threshold
         sequence:
-          - action: !input notify_service
+          - service: "{{ notify_service }}"
             data:
               title: "🔋 Charge d'appoint"
               message: >-
-                Batterie à {{ states(!input battery_level_sensor) }}%. Charge d'appoint.
+                Batterie à {{ states(battery_level_sensor) }}%. Charge d'appoint.
           - action: number.set_value
             target:
               entity_id: !input input_limit

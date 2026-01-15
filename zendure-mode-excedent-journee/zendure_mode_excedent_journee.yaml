@@ -51,6 +51,11 @@ conditions:
     after: !input start_time
     before: !input end_time
 
+variables:
+  notify_service: !input notify_service
+  battery_level_sensor: !input battery_level_sensor
+  enable_notifications: !input enable_notifications
+
 actions:
   - action: select.select_option
     target:
@@ -62,7 +67,7 @@ actions:
       - condition: template
         value_template: "{{ enable_notifications }}"
     then:
-      - action: !input notify_service
+      - service: "{{ notify_service }}"
         data:
           title: "☀️ Mode excédent activé"
           message: >-
