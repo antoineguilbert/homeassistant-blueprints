@@ -27,3 +27,9 @@ Active automatiquement un mode de fonctionnement (Smart, Charge, Décharge, Manu
 ## Source
 
 Plus d'informations sur : [antoineguilbert.fr](https://www.antoineguilbert.fr/category/domotique/home-assistant/)
+
+---
+
+Si ces blueprints vous sont utiles, vous pouvez me soutenir :
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F51RMT0S)

@@ -30,8 +30,14 @@ Le blueprint ajuste automatiquement la puissance de charge selon le niveau de ba
 
 ## Prérequis
 
-- Home Assistant avec intégration Zendure configurée
-- Capteur RTE Tempo configuré (fournissant les couleurs : Blanc, Bleu, Rouge)
+### Intégrations requises
+
+- **[Intégration Zendure](https://github.com/Zendure/Zendure-HA)** : Gestion de votre batterie Zendure dans Home Assistant
+- **[Intégration RTE Tempo](https://github.com/hekmon/rtetempo)** : Récupération des couleurs Tempo (Blanc, Bleu, Rouge)
+
+### Entités nécessaires
+
+- Capteur RTE Tempo (fournissant les couleurs du jour)
 - Entités Zendure :
   - Capteur de niveau de batterie (%)
   - Entité Zendure Manager (select)
@@ -99,3 +105,9 @@ Pour toute question ou suggestion d'amélioration, n'hésitez pas à ouvrir une 
 ## Licence
 
 Ce blueprint est fourni tel quel, libre d'utilisation et de modification.
+
+---
+
+Si ce blueprint vous est utile, vous pouvez me soutenir :
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F51RMT0S)

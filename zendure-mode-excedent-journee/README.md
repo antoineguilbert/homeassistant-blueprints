@@ -19,8 +19,13 @@ Par défaut configuré pour le **mode smart/excédent solaire** en journée, il 
 
 ## Prérequis
 
-- Home Assistant avec intégration Zendure configurée
-- Entité Zendure Manager (select) avec option "smart" disponible
+### Intégration requise
+
+- **[Intégration Zendure](https://github.com/Zendure/Zendure-HA)** : Gestion de votre batterie Zendure dans Home Assistant
+
+### Entité nécessaire
+
+- Entité Zendure Manager (select) avec les modes disponibles (smart, smart_charging, smart_discharging, manual, off)
 
 ## Installation
 
@@ -128,3 +133,9 @@ Pour toute question ou suggestion d'amélioration, n'hésitez pas à ouvrir une 
 ## Licence
 
 Ce blueprint est fourni tel quel, libre d'utilisation et de modification.
+
+---
+
+Si ce blueprint vous est utile, vous pouvez me soutenir :
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F51RMT0S)
