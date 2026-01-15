@@ -43,12 +43,12 @@ Active le mode smart/excédent solaire en journée pour optimiser l'autoconsomma
 
 **Charge Progressive Tempo :**
 ```
-https://github.com/[VOTRE-USERNAME]/homeassistant-blueprints/blob/main/zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml
+https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml
 ```
 
 **Mode Excédent Journée :**
 ```
-https://github.com/[VOTRE-USERNAME]/homeassistant-blueprints/blob/main/zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml
+https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml
 ```
 
 ## Combinaison recommandée

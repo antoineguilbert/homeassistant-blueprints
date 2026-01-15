@@ -34,7 +34,7 @@ Le mode excédent permet à la batterie de se charger uniquement avec le surplus
 2. Cliquez sur **Importer un Blueprint**
 3. Collez l'URL suivante :
 ```
-https://github.com/[VOTRE-USERNAME]/homeassistant-blueprints/blob/main/zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml
+https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml
 ```
 4. Cliquez sur **Aperçu** puis **Importer**
 

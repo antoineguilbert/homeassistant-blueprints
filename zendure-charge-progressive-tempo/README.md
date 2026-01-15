@@ -44,7 +44,7 @@ Le blueprint ajuste automatiquement la puissance de charge selon le niveau de ba
 2. Cliquez sur **Importer un Blueprint**
 3. Collez l'URL suivante :
 ```
-https://github.com/[VOTRE-USERNAME]/homeassistant-blueprints/blob/main/zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml
+https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml
 ```
 4. Cliquez sur **Aperçu** puis **Importer**
 
