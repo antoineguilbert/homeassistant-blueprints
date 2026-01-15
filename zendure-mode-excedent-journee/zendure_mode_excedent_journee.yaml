@@ -33,12 +33,6 @@ blueprint:
       default: false
       selector:
         boolean:
-    notify_service:
-      name: Service de notification
-      description: Service à utiliser pour les notifications (requis si notifications activées)
-      default: notify.notify
-      selector:
-        text:
 
 triggers:
   - platform: time
@@ -51,11 +45,6 @@ conditions:
     after: !input start_time
     before: !input end_time
 
-variables:
-  notify_service: !input notify_service
-  battery_level_sensor: !input battery_level_sensor
-  enable_notifications: !input enable_notifications
-
 actions:
   - action: select.select_option
     target:
@@ -65,12 +54,12 @@ actions:
 
   - if:
       - condition: template
-        value_template: "{{ enable_notifications }}"
+        value_template: !input enable_notifications
     then:
-      - service: "{{ notify_service }}"
+      - action: notify.notify
         data:
           title: "☀️ Mode excédent activé"
           message: >-
-            Batterie : {{ states(battery_level_sensor) }}%
+            Batterie : {{ states(!input battery_level_sensor) }}%
 
 mode: single
