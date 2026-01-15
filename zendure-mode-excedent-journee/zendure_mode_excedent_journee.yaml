@@ -1,0 +1,71 @@
+blueprint:
+  name: Zendure - Mode Excédent Journée
+  description: Active le mode smart/excédent solaire en journée pour optimiser l'utilisation du surplus solaire
+  domain: automation
+  input:
+    zendure_manager:
+      name: Zendure Manager
+      description: Entité de contrôle du Zendure Manager
+      selector:
+        entity:
+          domain: select
+    battery_level_sensor:
+      name: Niveau de batterie
+      description: Capteur du niveau de charge de la batterie (%)
+      selector:
+        entity:
+          domain: sensor
+    start_time:
+      name: Heure de début
+      description: Heure de passage en mode excédent
+      default: "06:00:00"
+      selector:
+        time:
+    end_time:
+      name: Heure de fin
+      description: Heure de fin du mode excédent
+      default: "22:00:00"
+      selector:
+        time:
+    enable_notifications:
+      name: Activer les notifications
+      description: Recevoir une notification lors de l'activation
+      default: false
+      selector:
+        boolean:
+    notify_service:
+      name: Service de notification
+      description: Service à utiliser pour les notifications (requis si notifications activées)
+      default: notify.notify
+      selector:
+        text:
+
+triggers:
+  - platform: time
+    at: !input start_time
+  - platform: homeassistant
+    event: start
+
+conditions:
+  - condition: time
+    after: !input start_time
+    before: !input end_time
+
+actions:
+  - action: select.select_option
+    target:
+      entity_id: !input zendure_manager
+    data:
+      option: "smart"
+
+  - if:
+      - condition: template
+        value_template: "{{ enable_notifications }}"
+    then:
+      - action: !input notify_service
+        data:
+          title: "☀️ Mode excédent activé"
+          message: >-
+            Batterie : {{ states(battery_level_sensor) }}%
+
+mode: single

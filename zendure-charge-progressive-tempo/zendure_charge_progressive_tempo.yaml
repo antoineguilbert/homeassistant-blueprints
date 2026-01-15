@@ -1,0 +1,171 @@
+blueprint:
+  name: Zendure - Charge Progressive Tempo
+  description: Charge progressive de la batterie Zendure selon le niveau et la couleur Tempo prévue (Blanc/Rouge)
+  domain: automation
+  input:
+    tempo_sensor:
+      name: Capteur Tempo
+      description: Capteur RTE Tempo pour la prochaine couleur
+      selector:
+        entity:
+          domain: sensor
+    battery_level_sensor:
+      name: Niveau de batterie
+      description: Capteur du niveau de charge de la batterie (%)
+      selector:
+        entity:
+          domain: sensor
+    zendure_manager:
+      name: Zendure Manager
+      description: Entité de contrôle du Zendure Manager
+      selector:
+        entity:
+          domain: select
+    input_limit:
+      name: Limite d'entrée
+      description: Entité pour définir la puissance de charge
+      selector:
+        entity:
+          domain: number
+    ac_mode:
+      name: Mode AC
+      description: Entité pour définir le mode AC
+      selector:
+        entity:
+          domain: select
+    charge_time:
+      name: Heure de déclenchement
+      description: Heure à laquelle la charge débute
+      default: "22:00:00"
+      selector:
+        time:
+    low_battery_threshold:
+      name: Seuil batterie faible
+      description: En dessous de ce seuil, charge rapide
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    medium_battery_threshold:
+      name: Seuil batterie moyenne
+      description: En dessous de ce seuil, charge normale
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    high_power_limit:
+      name: Puissance charge rapide
+      description: Puissance pour batterie faible
+      default: 1700
+      selector:
+        number:
+          min: 0
+          max: 2400
+          unit_of_measurement: "W"
+    medium_power_limit:
+      name: Puissance charge normale
+      description: Puissance pour batterie moyenne
+      default: 1200
+      selector:
+        number:
+          min: 0
+          max: 2400
+          unit_of_measurement: "W"
+    low_power_limit:
+      name: Puissance charge d'appoint
+      description: Puissance pour batterie élevée
+      default: 600
+      selector:
+        number:
+          min: 0
+          max: 2400
+          unit_of_measurement: "W"
+    notify_service:
+      name: Service de notification
+      description: Service à utiliser pour les notifications (ex. notify.notify ou notify.mobile_app_xxx)
+      default: notify.notify
+      selector:
+        text:
+
+triggers:
+  - platform: time
+    at: !input charge_time
+
+conditions:
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: !input tempo_sensor
+        state: "Blanc"
+      - condition: state
+        entity_id: !input tempo_sensor
+        state: "Rouge"
+
+actions:
+  - action: select.select_option
+    target:
+      entity_id: !input zendure_manager
+    data:
+      option: "off"
+
+  - choose:
+      - conditions:
+          - condition: numeric_state
+            entity_id: !input battery_level_sensor
+            below: !input low_battery_threshold
+        sequence:
+          - action: !input notify_service
+            data:
+              title: "🔋 Charge rapide"
+              message: >-
+                Batterie à {{ states(!input battery_level_sensor) }}%. Charge rapide.
+          - action: number.set_value
+            target:
+              entity_id: !input input_limit
+            data:
+              value: !input high_power_limit
+
+      - conditions:
+          - condition: numeric_state
+            entity_id: !input battery_level_sensor
+            above: !input low_battery_threshold
+            below: !input medium_battery_threshold
+        sequence:
+          - action: !input notify_service
+            data:
+              title: "🔋 Charge normale"
+              message: >-
+                Batterie à {{ states(!input battery_level_sensor) }}%. Charge normale.
+          - action: number.set_value
+            target:
+              entity_id: !input input_limit
+            data:
+              value: !input medium_power_limit
+
+      - conditions:
+          - condition: numeric_state
+            entity_id: !input battery_level_sensor
+            above: !input medium_battery_threshold
+        sequence:
+          - action: !input notify_service
+            data:
+              title: "🔋 Charge d'appoint"
+              message: >-
+                Batterie à {{ states(!input battery_level_sensor) }}%. Charge d'appoint.
+          - action: number.set_value
+            target:
+              entity_id: !input input_limit
+            data:
+              value: !input low_power_limit
+
+  - action: select.select_option
+    target:
+      entity_id: !input ac_mode
+    data:
+      option: "input"
+
+mode: single
