@@ -24,7 +24,7 @@ Le blueprint ajuste automatiquement la puissance de charge selon le niveau de ba
 
 - **Déclenchement horaire** : La charge démarre à l'heure configurée (par défaut 22h00)
 - **Condition Tempo** : Ne se déclenche que les jours Blanc ou Rouge pour profiter des tarifs avantageux
-- **Notifications** : Vous êtes informé du mode de charge activé avec le niveau de batterie actuel
+- **Gestion automatique** : Ajustement de la puissance sans intervention manuelle
 
 ## Prérequis
 
@@ -74,15 +74,14 @@ Copiez le fichier `zendure_charge_progressive_tempo.yaml` dans le dossier `bluep
 | **Puissance charge rapide** | 1700W | Puissance si batterie < 30% |
 | **Puissance charge normale** | 1200W | Puissance si batterie 30-60% |
 | **Puissance charge d'appoint** | 600W | Puissance si batterie > 60% |
-| **Service de notification** | notify.notify | Service pour les notifications |
 
 ## Exemple d'utilisation
 
 Votre batterie Zendure sera chargée chaque nuit à 22h, uniquement les jours Blanc ou Rouge :
 
-1. **Si batterie à 25%** → Charge rapide à 1700W avec notification
-2. **Si batterie à 45%** → Charge normale à 1200W avec notification
-3. **Si batterie à 75%** → Charge d'appoint à 600W avec notification
+1. **Si batterie à 25%** → Charge rapide à 1700W
+2. **Si batterie à 45%** → Charge normale à 1200W
+3. **Si batterie à 75%** → Charge d'appoint à 600W
 
 ## Personnalisation
 
@@ -90,7 +89,6 @@ Vous pouvez ajuster les seuils et puissances selon vos besoins :
 - Modifier les horaires de charge
 - Adapter les paliers de puissance à votre installation
 - Changer les seuils de batterie selon votre usage
-- Personnaliser le service de notification
 
 ## Support
 

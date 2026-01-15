@@ -1,30 +1,24 @@
-# Zendure - Mode Excédent Journée
+# Zendure - Programmation Horaire de Mode
 
 ## Description
 
-Ce blueprint active automatiquement le mode **smart/excédent solaire** sur votre batterie Zendure pendant la journée pour optimiser l'utilisation de votre production photovoltaïque.
+Ce blueprint active automatiquement un mode de fonctionnement spécifique sur votre batterie Zendure selon une plage horaire définie.
 
-Le mode excédent permet à la batterie de se charger uniquement avec le surplus de production solaire, évitant ainsi de consommer de l'électricité du réseau en journée.
+Par défaut configuré pour le **mode smart/excédent solaire** en journée, il permet d'optimiser l'utilisation de votre production photovoltaïque. Vous pouvez également l'utiliser pour programmer la décharge en heures pleines, la charge en heures creuses, ou tout autre scénario selon vos besoins.
 
 ## Fonctionnalités
 
 ### Activation automatique
 
-- **Déclenchement horaire** : Active le mode excédent à l'heure configurée (par défaut 6h00)
+- **Mode personnalisable** : Choisissez le mode de fonctionnement (Smart par défaut pour l'excédent solaire)
+- **Déclenchement horaire** : Active le mode à l'heure configurée (par défaut 6h00)
 - **Persistance au redémarrage** : Se réactive automatiquement au démarrage de Home Assistant si dans la plage horaire
 - **Plage horaire intelligente** : Fonctionne uniquement pendant la période définie (par défaut 6h00 - 22h00)
-
-### Notifications optionnelles
-
-- **Alertes paramétrables** : Activez ou non les notifications selon vos préférences
-- **Information batterie** : Niveau de charge inclus dans la notification
 
 ## Prérequis
 
 - Home Assistant avec intégration Zendure configurée
-- Entités Zendure :
-  - Entité Zendure Manager (select) avec option "smart" disponible
-  - Capteur de niveau de batterie (%)
+- Entité Zendure Manager (select) avec option "smart" disponible
 
 ## Installation
 
@@ -49,16 +43,14 @@ Copiez le fichier `zendure_mode_excedent_journee.yaml` dans le dossier `blueprin
 | Paramètre | Description |
 |-----------|-------------|
 | **Zendure Manager** | Entité de contrôle Zendure (ex: `select.zendure_manager`) |
-| **Niveau de batterie** | Capteur du niveau de charge en % (ex: `sensor.zendure_battery_level`) |
 
 ### Paramètres optionnels
 
 | Paramètre | Valeur par défaut | Description |
 |-----------|-------------------|-------------|
-| **Heure de début** | 06:00:00 | Heure d'activation du mode excédent |
-| **Heure de fin** | 22:00:00 | Heure de désactivation du mode excédent |
-| **Activer les notifications** | false | Recevoir une notification à l'activation |
-| **Service de notification** | notify.notify | Service pour les notifications |
+| **Mode de fonctionnement** | Couplage intelligent (Smart) | Mode à activer : Smart, Charge intelligente, Décharge intelligente, Manuel ou Arrêt |
+| **Heure de début** | 06:00:00 | Heure d'activation du mode |
+| **Heure de fin** | 22:00:00 | Heure de désactivation du mode |
 
 ## Fonctionnement
 
@@ -81,9 +73,25 @@ Cela garantit que le mode excédent est toujours activé pendant la journée, m�
 ### Configuration recommandée pour optimiser le solaire
 
 ```yaml
+Mode de fonctionnement: Couplage intelligent (Smart)
 Heure de début: 06:00:00
 Heure de fin: 22:00:00
-Notifications: Activées (pour surveiller)
+```
+
+### Autres cas d'usage
+
+**Décharge en heures pleines (17h-20h) :**
+```yaml
+Mode de fonctionnement: Décharge intelligente
+Heure de début: 17:00:00
+Heure de fin: 20:00:00
+```
+
+**Charge nocturne en heures creuses :**
+```yaml
+Mode de fonctionnement: Charge intelligente
+Heure de début: 02:00:00
+Heure de fin: 06:00:00
 ```
 
 ### Combinaison avec d'autres blueprints

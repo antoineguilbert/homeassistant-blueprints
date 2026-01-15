@@ -11,7 +11,7 @@ Charge automatique et progressive de votre batterie Zendure en fonction du nivea
 **Caractéristiques :**
 - Charge adaptative sur 3 paliers (rapide/normale/appoint)
 - Déclenchement uniquement les jours Blanc ou Rouge
-- Notifications du mode de charge actif
+- Gestion automatique de la puissance
 - Paramètres de puissance personnalisables
 
 [📖 Documentation](./zendure-charge-progressive-tempo/README.md) | [📥 Blueprint](./zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml)
@@ -24,7 +24,7 @@ Active le mode smart/excédent solaire en journée pour optimiser l'autoconsomma
 - Activation automatique en journée
 - Plage horaire configurable
 - Persistance au redémarrage de Home Assistant
-- Notifications optionnelles
+- Configuration simple et efficace
 
 [📖 Documentation](./zendure-mode-excedent-journee/README.md) | [📥 Blueprint](./zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml)
 
