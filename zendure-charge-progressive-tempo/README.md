@@ -1,5 +1,7 @@
 # Zendure - Charge Progressive Tempo
 
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fzendure-charge-progressive-tempo%2Fzendure_charge_progressive_tempo.yaml)
+
 ## Description
 
 Ce blueprint permet de charger automatiquement votre batterie Zendure de manière progressive en fonction :

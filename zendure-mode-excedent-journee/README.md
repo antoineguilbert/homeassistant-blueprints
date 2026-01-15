@@ -1,5 +1,7 @@
 # Zendure - Programmation Horaire de Mode
 
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fzendure-mode-excedent-journee%2Fzendure_mode_excedent_journee.yaml)
+
 ## Description
 
 Ce blueprint active automatiquement un mode de fonctionnement spécifique sur votre batterie Zendure selon une plage horaire définie.

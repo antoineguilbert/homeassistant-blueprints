@@ -1,73 +1,29 @@
-# Home Assistant - Blueprints
+# Home Assistant - Blueprints Zendure
 
-Collection de blueprints pour optimiser la gestion de votre batterie Zendure et d'autres automatisations Home Assistant.
+Collection de blueprints pour optimiser la gestion de votre batterie Zendure.
 
 ## Blueprints disponibles
 
-### 1. Zendure - Charge Progressive Tempo
+### Zendure - Charge Progressive Tempo
 
-Charge automatique et progressive de votre batterie Zendure en fonction du niveau de charge et de la couleur Tempo RTE.
+Charge automatique et progressive de votre batterie Zendure en fonction du niveau de charge et de la couleur Tempo RTE (jours Blanc/Rouge uniquement).
 
-**Caractéristiques :**
-- Charge adaptative sur 3 paliers (rapide/normale/appoint)
-- Déclenchement uniquement les jours Blanc ou Rouge
-- Gestion automatique de la puissance
-- Paramètres de puissance personnalisables
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fzendure-charge-progressive-tempo%2Fzendure_charge_progressive_tempo.yaml)
 
-[📖 Documentation](./zendure-charge-progressive-tempo/README.md) | [📥 Blueprint](./zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml)
-
-### 2. Zendure - Mode Excédent Journée
-
-Active le mode smart/excédent solaire en journée pour optimiser l'autoconsommation de votre production photovoltaïque.
-
-**Caractéristiques :**
-- Activation automatique en journée
-- Plage horaire configurable
-- Persistance au redémarrage de Home Assistant
-- Configuration simple et efficace
-
-[📖 Documentation](./zendure-mode-excedent-journee/README.md) | [📥 Blueprint](./zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml)
+[📖 Documentation complète](./zendure-charge-progressive-tempo/README.md)
 
 ---
 
-## Installation
+### Zendure - Programmation Horaire de Mode
 
-### Via l'interface Home Assistant
+Active automatiquement un mode de fonctionnement (Smart, Charge, Décharge, Manuel, Arrêt) sur une plage horaire définie. Idéal pour l'excédent solaire en journée ou la décharge en heures pleines.
 
-1. Accédez à **Paramètres** > **Automatisations et scènes** > **Blueprints**
-2. Cliquez sur **Importer un Blueprint**
-3. Collez l'URL du blueprint souhaité (voir ci-dessous)
-4. Cliquez sur **Aperçu** puis **Importer**
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fzendure-mode-excedent-journee%2Fzendure_mode_excedent_journee.yaml)
 
-### URLs d'import
+[📖 Documentation complète](./zendure-mode-excedent-journee/README.md)
 
-**Charge Progressive Tempo :**
-```
-https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-charge-progressive-tempo/zendure_charge_progressive_tempo.yaml
-```
-
-**Mode Excédent Journée :**
-```
-https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/zendure-mode-excedent-journee/zendure_mode_excedent_journee.yaml
-```
-
-## Combinaison recommandée
-
-Pour une gestion optimale 24/7 de votre batterie Zendure :
-
-- **Journée (6h-22h)** : Mode Excédent Journée → Charge avec surplus solaire
-- **Nuit (22h)** : Charge Progressive Tempo → Charge sur heures creuses Tempo
-
-## Support et contributions
-
-Pour toute question, suggestion ou pour signaler un bug :
-- Ouvrez une issue sur GitHub
-- Consultez la documentation de chaque blueprint
+---
 
 ## Source
 
-Plus d'informations et articles sur : https://www.antoineguilbert.fr/category/domotique/home-assistant/
-
-## Licence
-
-Ces blueprints sont fournis tels quels, libres d'utilisation et de modification.
+Plus d'informations sur : [antoineguilbert.fr](https://www.antoineguilbert.fr/category/domotique/home-assistant/)
