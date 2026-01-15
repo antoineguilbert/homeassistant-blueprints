@@ -9,12 +9,6 @@ blueprint:
       selector:
         entity:
           domain: select
-    battery_level_sensor:
-      name: Niveau de batterie
-      description: Capteur du niveau de charge de la batterie (%)
-      selector:
-        entity:
-          domain: sensor
     start_time:
       name: Heure de début
       description: Heure de passage en mode excédent
@@ -27,12 +21,6 @@ blueprint:
       default: "22:00:00"
       selector:
         time:
-    enable_notifications:
-      name: Activer les notifications
-      description: Recevoir une notification lors de l'activation
-      default: false
-      selector:
-        boolean:
 
 triggers:
   - platform: time
@@ -51,15 +39,5 @@ actions:
       entity_id: !input zendure_manager
     data:
       option: "smart"
-
-  - if:
-      - condition: template
-        value_template: !input enable_notifications
-    then:
-      - action: notify.notify
-        data:
-          title: "☀️ Mode excédent activé"
-          message: >-
-            Batterie : {{ states(!input battery_level_sensor) }}%
 
 mode: single

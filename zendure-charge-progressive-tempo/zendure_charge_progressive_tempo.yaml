@@ -84,12 +84,6 @@ blueprint:
           min: 0
           max: 2400
           unit_of_measurement: "W"
-    enable_notifications:
-      name: Activer les notifications
-      description: Recevoir une notification lors du déclenchement
-      default: false
-      selector:
-        boolean:
 
 triggers:
   - platform: time
@@ -118,15 +112,6 @@ actions:
             entity_id: !input battery_level_sensor
             below: !input low_battery_threshold
         sequence:
-          - if:
-              - condition: template
-                value_template: !input enable_notifications
-            then:
-              - action: notify.notify
-                data:
-                  title: "🔋 Charge rapide"
-                  message: >-
-                    Batterie à {{ states(!input battery_level_sensor) }}%. Charge rapide à {{ !input high_power_limit }}W.
           - action: number.set_value
             target:
               entity_id: !input input_limit
@@ -139,15 +124,6 @@ actions:
             above: !input low_battery_threshold
             below: !input medium_battery_threshold
         sequence:
-          - if:
-              - condition: template
-                value_template: !input enable_notifications
-            then:
-              - action: notify.notify
-                data:
-                  title: "🔋 Charge normale"
-                  message: >-
-                    Batterie à {{ states(!input battery_level_sensor) }}%. Charge normale à {{ !input medium_power_limit }}W.
           - action: number.set_value
             target:
               entity_id: !input input_limit
@@ -159,15 +135,6 @@ actions:
             entity_id: !input battery_level_sensor
             above: !input medium_battery_threshold
         sequence:
-          - if:
-              - condition: template
-                value_template: !input enable_notifications
-            then:
-              - action: notify.notify
-                data:
-                  title: "🔋 Charge d'appoint"
-                  message: >-
-                    Batterie à {{ states(!input battery_level_sensor) }}%. Charge d'appoint à {{ !input low_power_limit }}W.
           - action: number.set_value
             target:
               entity_id: !input input_limit
