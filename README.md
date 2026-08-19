@@ -1,10 +1,12 @@
-# Home Assistant - Blueprints Zendure
+# Home Assistant - Blueprints
 
-Collection de blueprints pour optimiser la gestion de votre batterie Zendure.
+Collection de blueprints pour Home Assistant : gestion de batterie solaire, confort thermique et automatisations du quotidien.
 
 ## Blueprints disponibles
 
-### Zendure - Charge Progressive Tempo
+### 🔋 Batterie & solaire
+
+#### Zendure - Charge Progressive Tempo
 
 Charge automatique et progressive de votre batterie Zendure en fonction du niveau de charge et de la couleur Tempo RTE (jours Blanc/Rouge uniquement).
 
@@ -14,7 +16,7 @@ Charge automatique et progressive de votre batterie Zendure en fonction du nivea
 
 ---
 
-### Zendure - Programmation Horaire de Mode
+#### Zendure - Programmation Horaire de Mode
 
 Active automatiquement un mode de fonctionnement (Smart, Charge, Décharge, Manuel, Arrêt) sur une plage horaire définie. Idéal pour l'excédent solaire en journée ou la décharge en heures pleines.
 
@@ -24,9 +26,36 @@ Active automatiquement un mode de fonctionnement (Smart, Charge, Décharge, Manu
 
 ---
 
+### 🌡️ Confort & température
+
+#### Notification Aération - Extérieur plus frais qu'à l'intérieur
+
+Vous prévient dès que la température extérieure passe sous celle de la pièce la plus chaude : le bon moment pour ouvrir les fenêtres et rafraîchir naturellement.
+
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Faeration-exterieur-plus-frais%2Faeration_exterieur_plus_frais.yaml)
+
+[📖 Documentation complète](./aeration-exterieur-plus-frais/README.md)
+
+---
+
+## Installation
+
+Chaque blueprint s'importe en un clic via le bouton **Importer dans Home Assistant** ci-dessus, ou manuellement :
+
+1. Accédez à **Paramètres** > **Automatisations et scènes** > **Blueprints**
+2. Cliquez sur **Importer un Blueprint**
+3. Collez l'URL GitHub du fichier `.yaml` du blueprint
+4. Cliquez sur **Aperçu** puis **Importer**
+
+Consultez la documentation de chaque blueprint pour le détail des prérequis et des paramètres.
+
 ## Source
 
 Plus d'informations sur : [antoineguilbert.fr](https://www.antoineguilbert.fr/category/domotique/home-assistant/)
+
+## Licence
+
+Ces blueprints sont fournis tels quels, libres d'utilisation et de modification.
 
 ---
 

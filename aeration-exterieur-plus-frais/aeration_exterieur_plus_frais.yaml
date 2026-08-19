@@ -1,0 +1,113 @@
+blueprint:
+  name: Notification aération - extérieur plus frais qu'à l'intérieur
+  description: >-
+    Envoie une notification dès que la température extérieure passe sous celle de
+    la pièce la plus chaude parmi les capteurs suivis, pour savoir quand ouvrir
+    les fenêtres. Les conditions de déclenchement (présence, plage horaire,
+    interrupteur dédié...) sont laissées libres via l'entrée "Conditions
+    supplémentaires".
+  domain: automation
+  input:
+    capteur_exterieur:
+      name: Capteur extérieur
+      description: Le capteur de température qui mesure l'extérieur.
+      selector:
+        entity:
+          domain: sensor
+          device_class: temperature
+
+    capteurs_interieurs:
+      name: Capteurs à surveiller
+      description: >-
+        Un ou plusieurs capteurs de température des pièces à surveiller. La
+        notification part dès que l'extérieur passe sous la plus chaude d'entre
+        elles.
+      selector:
+        entity:
+          domain: sensor
+          device_class: temperature
+          multiple: true
+
+    marge:
+      name: Marge de déclenchement
+      description: >-
+        Écart minimum en °C entre l'extérieur et la pièce la plus chaude. Évite
+        les notifications quand les deux températures sont quasi égales.
+      default: 1
+      selector:
+        number:
+          min: 0.5
+          max: 5
+          step: 0.5
+          unit_of_measurement: "°C"
+
+    stabilisation:
+      name: Durée de stabilisation
+      description: >-
+        Le déclencheur doit rester vrai pendant cette durée avant de notifier.
+        Évite une notif sur un pic de mesure isolé.
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: minutes
+
+    conditions_supplementaires:
+      name: Conditions supplémentaires (facultatif)
+      description: >-
+        Ajoutez vos propres conditions si besoin : présence à la maison,
+        interrupteur dédié, plage horaire à respecter... Laissez vide pour
+        notifier dès que la condition de température est remplie.
+      default: []
+      selector:
+        condition: {}
+
+    notification_action:
+      name: Notification à envoyer
+      description: >-
+        L'action de notification à déclencher. Utilisez {{ message }} et
+        {{ title }} dans le corps du message pour reprendre le texte généré
+        automatiquement.
+      selector:
+        action: {}
+
+trigger_variables:
+  capteur_exterieur: !input capteur_exterieur
+  capteurs_interieurs: !input capteurs_interieurs
+  marge: !input marge
+
+triggers:
+  - trigger: template
+    value_template: >-
+      {% set ext = states(capteur_exterieur) | float(99) %}
+      {% set temps = capteurs_interieurs | map('states') | map('float', -99) | list %}
+      {{ temps | count > 0 and ext < ((temps | max) - marge) }}
+    for:
+      minutes: !input stabilisation
+
+conditions: !input conditions_supplementaires
+
+actions:
+  - variables:
+      capteur_exterieur: !input capteur_exterieur
+      capteurs_interieurs: !input capteurs_interieurs
+      marge: !input marge
+      ext: "{{ states(capteur_exterieur) | float(99) | round(1) }}"
+      pieces_chaudes: >-
+        {% set ns = namespace(chauds=[]) %}
+        {% for e in capteurs_interieurs %}
+          {% set t = states(e) | float(-99) %}
+          {% if t > ext + marge %}
+            {% set ns.chauds = ns.chauds + [state_attr(e, 'friendly_name') or e] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.chauds | join(', ') }}
+      message: >-
+        Il fait {{ ext }}°C dehors, plus frais qu'à l'intérieur ({{ pieces_chaudes }}). Bon moment pour aérer !
+      title: "🌬️ Aération possible"
+
+  - alias: Envoyer la notification configurée
+    sequence: !input notification_action
+
+mode: single
