@@ -70,7 +70,7 @@ Celle de votre intégration météo (Météo-France, Met.no...).
 | Agendas | Google Agenda, CalDAV, agenda local... |
 | Jours fériés | **Jours fériés** (Holiday), pays France |
 | Couleur Tempo | **RTE Tempo** : deux capteurs, couleur du jour et du lendemain (Bleu, Blanc, Rouge) |
-| Prévision solaire | **Solcast** : capteurs « Prévisions pour aujourd'hui » et « pour demain » |
+| Prévision solaire | **[Helios Forecast](https://www.antoineguilbert.fr/prevision-solaire-home-assistant-avec-helios-forecast/)** : « Energy today remaining », « Energy day 2 », « Peak time day 1 » et « Peak time day 2 ». Marche aussi avec **Forecast.Solar** (production restante aujourd'hui, demain, heures du pic) |
 | Colis | Caméras qui signalent un colis par une entité `event` de type `package` (UniFi Protect...) |
 | Voiture | Un capteur de batterie en %, et un capteur binaire « câble branché » si vous en avez un |
 
@@ -117,7 +117,8 @@ Copiez le fichier `resume_ia.yaml` dans le dossier `blueprints/automation/` de v
 | **Agendas** | *(vide)* | Un ou plusieurs calendriers |
 | **Calendrier des jours fériés** | *(vide)* | Celui de l'intégration Jours fériés |
 | **Couleur Tempo du jour / de demain** | *(vide)* | Capteurs RTE Tempo |
-| **Prévision solaire du jour / de demain** | *(vide)* | Capteurs Solcast |
+| **Production solaire restante aujourd'hui / prévue demain** | *(vide)* | Capteurs d'énergie en kWh (Helios Forecast, Forecast.Solar...) |
+| **Heure du pic solaire aujourd'hui / demain** | *(vide)* | Capteurs horodatés : le résumé dit « vers 13 h ». En journée, il ne parle du soleil que si le pic est encore à venir |
 | **Bon soleil à partir de** | 3 kWh | Production prévue au-delà de laquelle le mot conseille de lancer une machine |
 | **Détection de colis** | *(vide)* | Entités `event` des caméras |
 | **Batterie de la voiture** | *(vide)* | Capteur en % |

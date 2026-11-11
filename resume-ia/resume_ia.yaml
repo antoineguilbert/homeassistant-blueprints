@@ -131,19 +131,49 @@ blueprint:
               domain: sensor
               multiple: true
         solaire_aujourdhui:
-          name: Prévision solaire du jour (facultatif)
-          description: Capteur Solcast « Prévisions pour aujourd'hui » (attribut detailedHourly).
+          name: Production solaire restante aujourd'hui (facultatif)
+          description: >-
+            Capteur d'énergie en kWh. Helios Forecast : « Energy today remaining ».
+            Forecast.Solar : « Estimated energy production - remaining today ».
+            À défaut, la production du jour entier.
           default: []
           selector:
             entity:
               domain: sensor
+              device_class: energy
+              multiple: true
+        solaire_aujourdhui_pic:
+          name: Heure du pic solaire aujourd'hui (facultatif)
+          description: >-
+            Capteur horodaté. Helios Forecast : « Peak time day 1 ».
+            Forecast.Solar : « Highest power peak time - today ».
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              device_class: timestamp
               multiple: true
         solaire_demain:
-          name: Prévision solaire de demain (facultatif)
+          name: Production solaire prévue demain (facultatif)
+          description: >-
+            Capteur d'énergie en kWh. Helios Forecast : « Energy day 2 ».
+            Forecast.Solar : « Estimated energy production - tomorrow ».
           default: []
           selector:
             entity:
               domain: sensor
+              device_class: energy
+              multiple: true
+        solaire_demain_pic:
+          name: Heure du pic solaire demain (facultatif)
+          description: >-
+            Capteur horodaté. Helios Forecast : « Peak time day 2 ».
+            Forecast.Solar : « Highest power peak time - tomorrow ».
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              device_class: timestamp
               multiple: true
         seuil_solaire:
           name: Bon soleil à partir de
@@ -234,7 +264,9 @@ variables:
   tempo_aujourdhui: !input tempo_aujourdhui
   tempo_demain: !input tempo_demain
   solaire_aujourdhui: !input solaire_aujourdhui
+  solaire_aujourdhui_pic: !input solaire_aujourdhui_pic
   solaire_demain: !input solaire_demain
+  solaire_demain_pic: !input solaire_demain_pic
   seuil_solaire: !input seuil_solaire
   colis: !input colis
   voiture_batterie: !input voiture_batterie
@@ -345,14 +377,15 @@ actions:
         {%- if q and q.templow is defined and q.templow <= 1 and (soir or h < 11) -%}
           {%- set ns.dire = ns.dire + [('Gel possible demain matin' if soir else 'Matin froid') ~ ' (' ~ q.templow | round(0) | int ~ ' °C), pare-brise à gratter.'] -%}
         {%- endif -%}
-        {#- 7. Bon soleil pour lancer une machine (pas un jour rouge) -#}
-        {%- set sc = solaire_demain if soir else solaire_aujourdhui -%}
-        {%- set sol = (state_attr(sc[0], 'detailedHourly') or []) if sc else [] -%}
-        {%- set sol = sol if soir else sol | selectattr('period_start', 'ge', now().replace(minute=0, second=0, microsecond=0)) | list -%}
-        {%- set kwh = sol | map(attribute='pv_estimate') | sum -%}
-        {%- set pic = sol | sort(attribute='pv_estimate', reverse=true) | first -%}
-        {%- if kwh >= seuil_solaire and pic and (td if soir else tj) != 'Rouge' -%}
-          {%- set ns.dire = ns.dire + [qui ~ 'bon soleil (' ~ kwh | round(1) | string | replace('.', ',') ~ ' kWh prévus) : le bon moment pour lancer une machine, c\'est vers ' ~ pic.period_start.hour ~ ' h.'] -%}
+        {#- 7. Bon soleil pour lancer une machine (pas un jour rouge). Capteurs génériques : Helios Forecast,
+               Forecast.Solar... En journée, seulement si le pic est encore à venir -#}
+        {%- set se = solaire_demain if soir else solaire_aujourdhui -%}
+        {%- set sp = solaire_demain_pic if soir else solaire_aujourdhui_pic -%}
+        {%- set kwh = (states(se[0]) | float(0)) if se else 0 -%}
+        {%- set pic = as_datetime(states(sp[0]), none) if sp else none -%}
+        {%- set pic = as_local(pic) if pic else none -%}
+        {%- if kwh >= seuil_solaire and (soir or not pic or pic > now()) and (td if soir else tj) != 'Rouge' -%}
+          {%- set ns.dire = ns.dire + [qui ~ 'bon soleil (' ~ kwh | round(1) | string | replace('.', ',') ~ ' kWh prévus) : ' ~ ('le bon moment pour lancer une machine, c\'est vers ' ~ pic.hour ~ ' h.' if pic else 'bon moment pour lancer une machine.')] -%}
         {%- endif -%}
         {#- 8. Voiture à brancher -#}
         {%- if voiture_batterie -%}
