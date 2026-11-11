@@ -1,0 +1,397 @@
+blueprint:
+  name: Petit mot IA du jour
+  description: >-
+    Fait écrire par une IA (agent de conversation : OpenAI, Gemini, Ollama,
+    Nemotron via llama.cpp...) un petit mot utile pour l'écran de la maison, et
+    le range dans une aide texte. Le blueprint choisit lui-même les 3 infos les
+    plus utiles du moment (colis, rendez-vous, jour férié, Tempo, pluie, gel,
+    soleil, voiture) : l'IA ne fait que les mettre en forme. Le soir, il parle
+    du lendemain.
+  author: Antoine Guilbert
+  source_url: https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/petit-mot-ia/petit_mot_ia.yaml
+  domain: automation
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    ia:
+      name: IA et rangement du texte
+      icon: mdi:creation-outline
+      input:
+        agent:
+          name: Agent de conversation
+          description: >-
+            L'IA qui rédige. Conseil : créez un agent dédié, sans accès au
+            contrôle des appareils (« Assist » décoché) : plus rapide, et aucun
+            risque qu'il agisse sur la maison.
+          selector:
+            conversation_agent: {}
+        texte_cible:
+          name: Aide texte où ranger le mot
+          description: >-
+            Une aide « Texte » (input_text) avec une longueur maximale de 255,
+            à afficher où vous voulez (tablette, carte Markdown, notification...).
+          selector:
+            entity:
+              domain: input_text
+        consignes:
+          name: Consignes de style
+          description: Ajoutées à la demande faite à l'IA.
+          default: Tutoie, ton détendu et chaleureux, pas de « Bonjour ».
+          selector:
+            text:
+              multiline: true
+        max_infos:
+          name: Nombre d'infos au plus
+          default: 3
+          selector:
+            number:
+              min: 1
+              max: 5
+              step: 1
+
+    quand:
+      name: Quand écrire
+      icon: mdi:clock-outline
+      collapsed: true
+      input:
+        heure_matin:
+          name: Matin
+          default: "06:30:00"
+          selector:
+            time: {}
+        heure_midi:
+          name: Midi
+          default: "11:30:00"
+          selector:
+            time: {}
+        heure_aprem:
+          name: Fin d'après-midi
+          default: "16:30:00"
+          selector:
+            time: {}
+        heure_soir:
+          name: Soir
+          default: "19:30:00"
+          selector:
+            time: {}
+        bascule:
+          name: Parler du lendemain à partir de
+          default: "18:00:00"
+          selector:
+            time: {}
+        bouton:
+          name: Bouton pour relancer (facultatif)
+          description: >-
+            Une aide « Bouton » (input_button) : chaque appui fait écrire un
+            nouveau mot. Pratique sur une tablette.
+          default: []
+          selector:
+            entity:
+              domain: input_button
+              multiple: true
+
+    donnees:
+      name: Données de la maison
+      icon: mdi:home-analytics
+      input:
+        meteo:
+          name: Météo
+          selector:
+            entity:
+              domain: weather
+        agendas:
+          name: Agendas (facultatif)
+          description: Le prochain rendez-vous dans les 36 h est mentionné.
+          default: []
+          selector:
+            entity:
+              domain: calendar
+              multiple: true
+        feries:
+          name: Calendrier des jours fériés (facultatif)
+          description: Celui de l'intégration « Jours fériés » (Holiday).
+          default: []
+          selector:
+            entity:
+              domain: calendar
+              multiple: true
+        tempo_aujourdhui:
+          name: Couleur Tempo du jour (facultatif)
+          description: Capteur dont l'état vaut Bleu, Blanc ou Rouge (intégration RTE Tempo).
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              multiple: true
+        tempo_demain:
+          name: Couleur Tempo de demain (facultatif)
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              multiple: true
+        solaire_aujourdhui:
+          name: Prévision solaire du jour (facultatif)
+          description: Capteur Solcast « Prévisions pour aujourd'hui » (attribut detailedHourly).
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              multiple: true
+        solaire_demain:
+          name: Prévision solaire de demain (facultatif)
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              multiple: true
+        seuil_solaire:
+          name: Bon soleil à partir de
+          description: Production prévue au-delà de laquelle le mot conseille de lancer une machine.
+          default: 3
+          selector:
+            number:
+              min: 0.5
+              max: 50
+              step: 0.5
+              unit_of_measurement: kWh
+        colis:
+          name: Détection de colis (facultatif)
+          description: >-
+            Entités « événement » de vos caméras qui signalent un colis
+            (type d'événement « package », par exemple UniFi Protect). Un colis
+            relance aussi l'écriture du mot.
+          default: []
+          selector:
+            entity:
+              domain: event
+              multiple: true
+        voiture_batterie:
+          name: Batterie de la voiture (facultatif)
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              multiple: true
+        voiture_branchee:
+          name: Voiture branchée (facultatif)
+          description: Capteur binaire allumé quand le câble est branché.
+          default: []
+          selector:
+            entity:
+              domain: binary_sensor
+              multiple: true
+        seuil_voiture:
+          name: Rappeler de brancher sous
+          default: 30
+          selector:
+            number:
+              min: 5
+              max: 80
+              step: 5
+              unit_of_measurement: "%"
+
+mode: single
+max_exceeded: silent
+
+triggers:
+  - trigger: time
+    at:
+      - !input heure_matin
+      - !input heure_midi
+      - !input heure_aprem
+      - !input heure_soir
+    id: heure
+  - trigger: state
+    entity_id: !input bouton
+    not_from: [unavailable]
+    id: bouton
+  - trigger: state
+    entity_id: !input colis
+    not_from: [unavailable, unknown]
+    id: colis
+
+conditions:
+  - alias: Un événement de caméra ne compte que si c'est un colis
+    condition: or
+    conditions:
+      - condition: not
+        conditions:
+          - condition: trigger
+            id: colis
+      - condition: template
+        value_template: "{{ trigger.to_state is defined and trigger.to_state.attributes.get('event_type') == 'package' }}"
+
+variables:
+  agent: !input agent
+  texte_cible: !input texte_cible
+  consignes: !input consignes
+  max_infos: !input max_infos
+  bascule: !input bascule
+  meteo: !input meteo
+  agendas: !input agendas
+  feries: !input feries
+  tempo_aujourdhui: !input tempo_aujourdhui
+  tempo_demain: !input tempo_demain
+  solaire_aujourdhui: !input solaire_aujourdhui
+  solaire_demain: !input solaire_demain
+  seuil_solaire: !input seuil_solaire
+  colis: !input colis
+  voiture_batterie: !input voiture_batterie
+  voiture_branchee: !input voiture_branchee
+  seuil_voiture: !input seuil_voiture
+
+actions:
+  - action: weather.get_forecasts
+    target:
+      entity_id: !input meteo
+    data:
+      type: hourly
+    response_variable: meteo_h
+    continue_on_error: true
+  - action: weather.get_forecasts
+    target:
+      entity_id: !input meteo
+    data:
+      type: daily
+    response_variable: meteo_j
+    continue_on_error: true
+
+  # Le tri se fait ici, en Jinja : l'IA ne fait que rédiger. Un modèle à qui l'on
+  # demande d'arbitrer une liste de règles réfléchit trop longtemps, parfois sans répondre.
+  - variables:
+      soir: "{{ now().strftime('%H:%M:%S') >= bascule }}"
+      moment: >-
+        {% set h = now().hour %}
+        {{ 'soir' if soir else 'matin' if h < 11 else 'midi' if h < 16 else 'après-midi' }}
+      meteo_courte: >-
+        {%- set C = {'clear-night':'ciel dégagé','cloudy':'couvert','exceptional':'temps exceptionnel','fog':'brouillard','hail':'grêle','lightning':'orages','lightning-rainy':'orages et pluie','partlycloudy':'éclaircies','pouring':'grosse pluie','rainy':'pluie','snowy':'neige','snowy-rainy':'pluie et neige','sunny':'soleil','windy':'vent','windy-variant':'vent et nuages'} -%}
+        {%- set fj = meteo_j[meteo].forecast if meteo_j is defined and meteo in meteo_j else [] -%}
+        {%- set d = (now() + timedelta(days=1)).date() if soir else now().date() -%}
+        {%- set q = fj | selectattr('datetime', 'search', '^' ~ d.isoformat()) | first -%}
+        {{ (C.get(q.condition, q.condition) ~ ', ' ~ q.templow | round(0) | int ~ ' à ' ~ q.temperature | round(0) | int ~ ' °C') if q else '' }}
+      infos: |-
+        {%- set h = now().hour -%}
+        {%- set J = ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'] -%}
+        {%- set fh = meteo_h[meteo].forecast if meteo_h is defined and meteo in meteo_h else [] -%}
+        {%- set fj = meteo_j[meteo].forecast if meteo_j is defined and meteo in meteo_j else [] -%}
+        {%- set auj = now().date() -%}
+        {%- set dem = auj + timedelta(days=1) -%}
+        {%- set d = dem if soir else auj -%}
+        {%- set qui = 'Demain, ' if soir else '' -%}
+        {%- set depuis = 7 if soir else [h + 1, 7] | max -%}
+        {%- set q = fj | selectattr('datetime', 'search', '^' ~ d.isoformat()) | first -%}
+        {%- set T = {'bleu':'Bleu','blue':'Bleu','blanc':'Blanc','white':'Blanc','rouge':'Rouge','red':'Rouge'} -%}
+        {%- set tj = T.get((states(tempo_aujourdhui[0]) if tempo_aujourdhui else '') | lower, '') -%}
+        {%- set td = T.get((states(tempo_demain[0]) if tempo_demain else '') | lower, '') -%}
+        {%- set ns = namespace(dire=[], ev=[]) -%}
+        {#- 1. Colis déposé aujourd'hui (dernier événement des caméras) -#}
+        {%- for e in colis -%}
+          {%- set t = as_datetime(states(e), none) -%}
+          {%- if t and state_attr(e, 'event_type') == 'package' and as_local(t).date() == auj -%}
+            {%- set ns.dire = ns.dire + ['Un colis a été déposé devant la maison vers ' ~ as_local(t).strftime('%H h %M') ~ '.'] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- set ns.dire = ns.dire[:1] -%}
+        {#- 2. Prochain rendez-vous dans les 36 h (attributs des calendriers, ceux qui ont une heure d'abord) -#}
+        {%- for c in agendas -%}
+          {%- set s = as_datetime(state_attr(c, 'start_time') or '', none) -%}
+          {%- if s -%}
+            {%- set s = s.replace(tzinfo=now().tzinfo) if s.tzinfo is none else s -%}
+            {%- set jour_entier = state_attr(c, 'all_day') -%}
+            {%- if (s >= now() or (jour_entier and s.date() >= auj)) and s < now() + timedelta(hours=36) -%}
+              {%- set ns.ev = ns.ev + [(('1' if jour_entier else '0') ~ s.isoformat(), s, jour_entier, state_attr(c, 'message'))] -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- for e in (ns.ev | sort(attribute=0))[:1] -%}
+          {%- set dd = e[1].date() -%}
+          {%- set lj = 'aujourd\'hui' if dd == auj else 'demain' if dd == dem else J[dd.weekday()] -%}
+          {%- set ns.dire = ns.dire + ['Agenda : ' ~ e[3] ~ ', ' ~ lj ~ ('' if e[2] else ' à ' ~ e[1].hour ~ ' h' ~ (' %02d' | format(e[1].minute) if e[1].minute else '')) ~ '.'] -%}
+        {%- endfor -%}
+        {#- 3. Jour férié : celui du jour concerné ; à midi, celui de demain -#}
+        {%- for c in feries -%}
+          {%- set s = as_datetime(state_attr(c, 'start_time') or '', none) -%}
+          {%- if s and s.date() == d -%}
+            {%- set ns.dire = ns.dire + [qui ~ 'jour férié : ' ~ state_attr(c, 'message') ~ '.'] -%}
+          {%- elif s and s.date() == dem and not soir and h >= 11 -%}
+            {%- set ns.dire = ns.dire + ['Demain, jour férié : ' ~ state_attr(c, 'message') ~ '.'] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {#- 4. Jour Tempo blanc ou rouge -#}
+        {%- set tempo = [] -%}
+        {%- if not soir and tj in ['Blanc', 'Rouge'] and h < 22 -%}{%- set tempo = tempo + [['', tj]] -%}{%- endif -%}
+        {%- if h >= 11 and td in ['Blanc', 'Rouge'] -%}{%- set tempo = tempo + [['Demain, ', td]] -%}{%- endif -%}
+        {%- for t in tempo -%}
+          {%- set ns.dire = ns.dire + [t[0] ~ 'jour Tempo ' ~ t[1] | lower ~ (' (courant très cher de 6 h à 22 h) : lave-linge, lave-vaisselle et sèche-linge après 22 h.' if t[1] == 'Rouge' else ' : machines plutôt après 22 h.')] -%}
+        {%- endfor -%}
+        {#- 5. Pluie aux heures où l'on sort (7 h-21 h) -#}
+        {%- set nr = namespace(r=[], a=none, b=none) -%}
+        {%- for f in fh -%}
+          {%- set t = as_local(as_datetime(f.datetime)) -%}
+          {%- if t.date() == d and depuis <= t.hour <= 21 and (f.precipitation | float(0)) > 0 -%}
+            {%- if nr.b is not none and t.hour <= nr.b + 3 -%}{%- set nr.b = t.hour -%}
+            {%- else -%}
+              {%- if nr.a is not none -%}{%- set nr.r = nr.r + [nr.a ~ ' h et ' ~ (nr.b + 1) ~ ' h'] -%}{%- endif -%}
+              {%- set nr.a = t.hour -%}{%- set nr.b = t.hour -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if nr.a is not none -%}{%- set nr.r = nr.r + [nr.a ~ ' h et ' ~ (nr.b + 1) ~ ' h'] -%}{%- endif -%}
+        {%- if nr.r -%}
+          {%- set ns.dire = ns.dire + [qui ~ 'pluie prévue entre ' ~ nr.r | join(', puis entre ') ~ '.'] -%}
+        {%- endif -%}
+        {#- 6. Gel -#}
+        {%- if q and q.templow is defined and q.templow <= 1 and (soir or h < 11) -%}
+          {%- set ns.dire = ns.dire + [('Gel possible demain matin' if soir else 'Matin froid') ~ ' (' ~ q.templow | round(0) | int ~ ' °C), pare-brise à gratter.'] -%}
+        {%- endif -%}
+        {#- 7. Bon soleil pour lancer une machine (pas un jour rouge) -#}
+        {%- set sc = solaire_demain if soir else solaire_aujourdhui -%}
+        {%- set sol = (state_attr(sc[0], 'detailedHourly') or []) if sc else [] -%}
+        {%- set sol = sol if soir else sol | selectattr('period_start', 'ge', now().replace(minute=0, second=0, microsecond=0)) | list -%}
+        {%- set kwh = sol | map(attribute='pv_estimate') | sum -%}
+        {%- set pic = sol | sort(attribute='pv_estimate', reverse=true) | first -%}
+        {%- if kwh >= seuil_solaire and pic and (td if soir else tj) != 'Rouge' -%}
+          {%- set ns.dire = ns.dire + [qui ~ 'bon soleil (' ~ kwh | round(1) | string | replace('.', ',') ~ ' kWh prévus) : le bon moment pour lancer une machine, c\'est vers ' ~ pic.period_start.hour ~ ' h.'] -%}
+        {%- endif -%}
+        {#- 8. Voiture à brancher -#}
+        {%- if voiture_batterie -%}
+          {%- set v = states(voiture_batterie[0]) | int(100) -%}
+          {%- set branchee = voiture_branchee and is_state(voiture_branchee[0], 'on') -%}
+          {%- if v < seuil_voiture and not branchee -%}
+            {%- set ns.dire = ns.dire + ['La voiture est à ' ~ v ~ ' %' ~ (' et pas branchée' if voiture_branchee else '') ~ '.'] -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- for x in ns.dire[:max_infos | int] %}
+        - {{ x[:1] | upper ~ x[1:] }}
+        {%- endfor %}
+
+  - action: conversation.process
+    data:
+      agent_id: "{{ agent }}"
+      language: fr
+      text: |-
+        Petit mot pour l'écran de la maison ({{ moment }}).
+        {% if infos | trim %}Résume ces infos en une ou deux phrases courtes et naturelles. Reformule et raccourcis librement, garde les heures, n'ajoute rien, ne pose pas de question :
+        {{ infos }}
+        {%- else %}Rien de spécial : écris une seule phrase tranquille sur le temps {{ 'de demain' if soir else 'du jour' }}{{ ' (' ~ meteo_courte ~ ')' if meteo_courte else '' }}.{% endif %}
+        {{ consignes }}
+        Réponds avec le texte seul, en français, sans guillemets, sans emoji, sans liste.
+    response_variable: ia
+    continue_on_error: true
+
+  # Si l'IA ne répond pas (quota, panne), le mot précédent reste affiché.
+  - variables:
+      texte: >-
+        {%- set r = ia.response if ia is defined and ia.response is defined else none -%}
+        {%- set t = r.speech.plain.speech if r and r.response_type != 'error' and r.speech is defined else '' -%}
+        {{ t | replace('\n', ' ') | trim | trim('"«» ') }}
+  - if:
+      - condition: template
+        value_template: "{{ texte | length > 10 }}"
+    then:
+      - action: input_text.set_value
+        target:
+          entity_id: !input texte_cible
+        data:
+          value: "{{ texte[:255] }}"
