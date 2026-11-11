@@ -40,13 +40,13 @@ Vous prévient dès que la température extérieure passe sous celle de la pièc
 
 ### 🤖 Intelligence artificielle
 
-#### Petit mot IA du jour
+#### Résumé IA du jour
 
-Fait écrire par une IA (OpenAI, Gemini, Ollama, Nemotron...) un petit mot utile pour l'écran de la maison : colis déposé, prochain rendez-vous, jour férié, Tempo, pluie, gel... Le blueprint choisit les infos, l'IA les met en forme.
+Fait écrire par une IA (OpenAI, Gemini, Ollama, Nemotron...) un court résumé utile pour l'écran de la maison : colis déposé, prochain rendez-vous, jour férié, Tempo, pluie, gel... Le blueprint choisit les infos, l'IA les met en forme.
 
-[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fpetit-mot-ia%2Fpetit_mot_ia.yaml)
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fresume-ia%2Fresume_ia.yaml)
 
-[📖 Documentation complète](./petit-mot-ia/README.md)
+[📖 Documentation complète](./resume-ia/README.md)
 
 ---
 

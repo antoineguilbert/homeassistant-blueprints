@@ -1,14 +1,14 @@
 blueprint:
-  name: Petit mot IA du jour
+  name: Résumé IA du jour
   description: >-
     Fait écrire par une IA (agent de conversation : OpenAI, Gemini, Ollama,
-    Nemotron via llama.cpp...) un petit mot utile pour l'écran de la maison, et
+    Nemotron via llama.cpp...) un court résumé utile pour l'écran de la maison, et
     le range dans une aide texte. Le blueprint choisit lui-même les 3 infos les
     plus utiles du moment (colis, rendez-vous, jour férié, Tempo, pluie, gel,
     soleil, voiture) : l'IA ne fait que les mettre en forme. Le soir, il parle
     du lendemain.
   author: Antoine Guilbert
-  source_url: https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/petit-mot-ia/petit_mot_ia.yaml
+  source_url: https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/resume-ia/resume_ia.yaml
   domain: automation
   homeassistant:
     min_version: "2024.10.0"

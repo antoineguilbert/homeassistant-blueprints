@@ -1,10 +1,10 @@
-# Petit mot IA du jour
+# Résumé IA du jour
 
-[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fpetit-mot-ia%2Fpetit_mot_ia.yaml)
+[![Importer dans Home Assistant](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fantoineguilbert%2Fhomeassistant-blueprints%2Fblob%2Fmain%2Fresume-ia%2Fresume_ia.yaml)
 
 ## Description
 
-Ce blueprint fait écrire par une IA un **petit mot utile** pour l'écran de la maison (tablette murale, carte du tableau de bord, notification...), quatre fois par jour :
+Ce blueprint fait écrire par une IA un **court résumé utile** pour l'écran de la maison (tablette murale, carte du tableau de bord, notification...), quatre fois par jour :
 
 > Aujourd'hui c'est férié, Armistice. Demain à 12 h 30, rendez-vous chez le dentiste.
 
@@ -82,13 +82,13 @@ Celle de votre intégration météo (Météo-France, Met.no...).
 2. Cliquez sur **Importer un Blueprint**
 3. Collez l'URL suivante :
 ```
-https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/petit-mot-ia/petit_mot_ia.yaml
+https://github.com/antoineguilbert/homeassistant-blueprints/blob/main/resume-ia/resume_ia.yaml
 ```
 4. Cliquez sur **Aperçu** puis **Importer**
 
 ### Manuel
 
-Copiez le fichier `petit_mot_ia.yaml` dans le dossier `blueprints/automation/` de votre configuration Home Assistant.
+Copiez le fichier `resume_ia.yaml` dans le dossier `blueprints/automation/` de votre configuration Home Assistant.
 
 ## Configuration
 
@@ -140,7 +140,7 @@ Une carte Markdown suffit :
 
 ```yaml
 type: markdown
-content: "{{ states('input_text.petit_mot') }}"
+content: "{{ states('input_text.resume_ia') }}"
 ```
 
 Ou dans une notification :
@@ -148,7 +148,7 @@ Ou dans une notification :
 ```yaml
 action: notify.mobile_app_mon_telephone
 data:
-  message: "{{ states('input_text.petit_mot') }}"
+  message: "{{ states('input_text.resume_ia') }}"
 ```
 
 ### Une journée type
