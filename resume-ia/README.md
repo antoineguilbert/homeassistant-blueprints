@@ -4,7 +4,7 @@
 
 ## Description
 
-Ce blueprint fait écrire par une IA un **court résumé utile** pour l'écran de la maison (tablette murale, carte du tableau de bord, notification...), quatre fois par jour :
+Ce blueprint fait écrire par une IA un **court résumé utile** pour l'écran de la maison (tablette murale, carte du tableau de bord, notification...), aux heures que vous choisissez :
 
 > Aujourd'hui c'est férié, Armistice. Demain à 12 h 30, rendez-vous chez le dentiste.
 
@@ -105,7 +105,7 @@ Copiez le fichier `resume_ia.yaml` dans le dossier `blueprints/automation/` de v
 
 | Paramètre | Valeur par défaut | Description |
 |-----------|-------------------|-------------|
-| **Matin, Midi, Fin d'après-midi, Soir** | 6 h 30, 11 h 30, 16 h 30, 19 h 30 | Les quatre rédactions de la journée |
+| **Heures de rédaction** | 06:30, 11:30, 16:30, 19:30 | Autant de créneaux que vous voulez : choisissez dans la liste ou tapez votre heure au format HH:MM (par exemple 07:15), puis Entrée. Une croix retire un créneau |
 | **Parler du lendemain à partir de** | 18 h | Après cette heure, le mot parle de demain |
 | **Bouton pour relancer** | *(vide)* | Une aide « Bouton » : chaque appui fait écrire un nouveau mot |
 
@@ -167,7 +167,7 @@ data:
 
 - **Ton** : changez les « Consignes de style » (« vouvoie », « sois bref », « ajoute une touche d'humour »...).
 - **Plus d'infos** : passez à 4 ou 5 infos sur un grand écran.
-- **Autres moments** : décalez les heures, ou ajoutez une automatisation « Exécuter les actions » pour une rédaction à la demande.
+- **Autres moments** : ajoutez ou retirez des heures de rédaction (une seule le matin suffit pour un résumé de la journée), ou utilisez « Exécuter les actions » de l'automatisation pour une rédaction à la demande.
 - **Plusieurs écrans** : créez plusieurs automatisations, avec chacune son aide texte et ses consignes.
 
 ## Notes
